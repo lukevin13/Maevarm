@@ -113,12 +113,12 @@ void init() {
 	sei();
 	m_bus_init();
 	m_usb_init();
-	while (!m_usb_isconnected());
+	// while (!m_usb_isconnected());
 	while (!m_imu_init(ACCEL_PRESCALE, GYRO_PRESCALE));
 	timer_setup();
 	pwm_setup();
 
-	
+
 
 	// Motors
 	set(DDRB, 1);	// STANDBY
