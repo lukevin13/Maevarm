@@ -1,6 +1,7 @@
 #include "m_general.h"
 #include "m_bus.h"
 #include "m_rf.h"
+#include "m_usb.h"
 #include <math.h>
 
 #define DEF_F 500
@@ -15,7 +16,7 @@ void pwm_setup();
 
 int main() {
 	init();
-	char buffer[3] = {0,0,0};
+	unsigned char buffer[3] = {0,0,0};
 	int counter = 0;
 	int duration = 0;
 	int state = 0;
@@ -28,16 +29,17 @@ int main() {
             state = 1;
 
 			m_rf_read(buffer, PACKET_LENGTH);
-			int raw_f = *(int*)&buffer[0];
+			unsigned int raw_f = *(int*)&buffer[0];
             duration = (int) buffer[2];
 
             double f = raw_f / 10.0;
             int a_time = 62550/f;
 
+            TCNT1 = 0;
+            TCNT3 = 0;
             OCR1A = a_time;
             OCR1B = a_time/2;
 
-            set(TCCR1B, CS12);        // Turn on timer
             set(PORTB, 1);
 		}
 
@@ -48,7 +50,9 @@ int main() {
 
 		if (state && (counter >= duration)) {
 			state = 0;
-            clear(TCCR1B, CS12);        // Turn off timer
+            OCR1A = 0;                  // Turn off audio
+            OCR1B = 0;
+
             clear(PORTB, 1);
 		}
 	}
@@ -87,7 +91,7 @@ void init() {
 void pwm_setup() {
 
     // Clock source config
-    clear(TCCR1B, CS12);        // Turn off timer
+    set(TCCR1B, CS12);        // Turn off timer
     clear(TCCR1B, CS11);        // ^
     clear(TCCR1B, CS10);        // ^
 
@@ -106,8 +110,8 @@ void pwm_setup() {
     clear(TCCR1A, COM1B0);      // ^
 
     // Channel Compare config
-    OCR1A = 62500/DEF_F;              // 1Hz frequency
-    OCR1B = 62500/DEF_F/2;            // 50% duty cycle
+    OCR1A = 0;
+    OCR1B = 0;
 }
 
 ISR(INT2_vect) {
