@@ -20,7 +20,7 @@ void m_usb_tx_data(int *data, int size);
 void pwm_setup();
 
 volatile int imu_update_flag = 0;
-volatile double goffset = 65.0; // 40.0;
+volatile double goffset = 63.0; // 40.0;
 
 int main() {
 
@@ -83,9 +83,9 @@ int main() {
 
 
 				// Motor control
-				int b_time = (int) (150.0*(mag/100.0));
+				int b_time = (int) (150.0*(mag/30.0));
 				set(PORTB, 1);				// Standby = high
-				if (abs(error) < 1) {		// Set margins to the value to check
+				if (abs(error) < 0.25) {		// Set margins to the value to check
 
 					clear(PORTC, 6);
 					clear(PORTC, 7);
