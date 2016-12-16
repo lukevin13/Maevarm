@@ -20,7 +20,7 @@ void m_usb_tx_data(int *data, int size);
 void pwm_setup();
 
 volatile int imu_update_flag = 0;
-volatile double goffset = 40.0;
+volatile double goffset = 65.0; // 40.0;
 
 int main() {
 
@@ -28,12 +28,13 @@ int main() {
 	init();
 	int data[9];				// Buffer for holding IMU Data
 	double d_angle = 0;			// Angular Velocity
+	double old_d_angle = 0;
 	double angle = 0;			// Current tilt angle
 	
 	// Feedback Constants
-	double Kp = 3;//10;			// Proportional control constant
-	double Ki = 0;			// Integral control constant
-	double Kd = 6;//60;			// Derivative control constant
+	double Kp = 10;//10;			// Proportional control constant
+	double Ki = 0;				// Integral control constant
+	double Kd = 120;//60;			// Derivative control constant
 
 	// Feedback variable
 	double error = 0;
@@ -46,7 +47,7 @@ int main() {
 
 			// If IMU read is successful
 			if (m_imu_raw(data)) {
-				m_usb_tx_data(data, 9);
+				// m_usb_tx_data(data, 9);
 				d_angle = (data[3]+goffset) / 32768.0;
 				d_angle *= GYRO_RANGE;
 				d_angle *= DELTA_T;
@@ -55,24 +56,36 @@ int main() {
 				double ay = data[1]-1500.0;
 				double az = data[2]+200.0;
 
-				double den = 57.29*atan2(ay,az) + 3.5;
-				angle = 0.98*(angle+d_angle) + 0.02*den;
+				double den = 57.29*atan2(ay,az) + 6;
+				// angle = 0.99*(angle+d_angle) + 0.01*den;
+				d_angle = 0.95*old_d_angle + 0.05*d_angle;
+				angle = angle+d_angle;
+
+				
 
 				// Controller
 				error = -angle;
 				double d_error = (error - old_error);
 				double i_error = (error + old_error)*0.5;
-				double control = Kp*error + Kd*d_error + Ki*i_error;
+				double c_p = Kp*error;
+				double c_d = Kd*d_error;
+				double c_i = Ki*i_error;
+				double control = c_p + c_d + c_i;
 				double mag = abs(control);
-				if (mag > 25) {
-					mag = 25;
+				if (mag > 90) {
+					mag = 90;
 				}
 				
+				m_usb_tx_int(angle);
+				m_usb_tx_string("\t");
+				m_usb_tx_int(d_angle);
+				m_usb_tx_string("\r\n");
+
 
 				// Motor control
-				int b_time = (int) (150.0*(mag/30.0));
+				int b_time = (int) (150.0*(mag/100.0));
 				set(PORTB, 1);				// Standby = high
-				if (abs(control) < 2) {	// Set margins to the value to check
+				if (abs(error) < 1) {		// Set margins to the value to check
 
 					clear(PORTC, 6);
 					clear(PORTC, 7);
@@ -96,6 +109,7 @@ int main() {
 
 				// Update Values
 				old_error = error;
+				old_d_angle = d_angle;
 
 				m_usb_tx_string("\r\n");
 
