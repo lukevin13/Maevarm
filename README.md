@@ -17,9 +17,9 @@ Orchestra-working is the final working version of the project
 
 ## Flashing programs onto the M2
 Instructions vary across different operating systems:  
--	[Windows](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting)
--	[OS X](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting-mac)
--	[Linux](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting-linux)
+* [Windows](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting)  
+* [OS X](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting-mac)  
+* [Linux](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM-starting-linux)
 
 ## Further Information
 For more information, please see the Maevarm documentation on the [MEAM.Design](http://medesign.seas.upenn.edu/index.php/Guides/MaEvArM) page.
