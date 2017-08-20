@@ -16,7 +16,7 @@ Orchestra contains test code used to ensure wireless communications and wave-gen
 Orchestra-working is the final working version of the project
 
 ## Flashing programs onto the M2
-Instructions vary across different operating systems:
+Instructions vary across different operating systems
 * One
 * Two
 * Three
