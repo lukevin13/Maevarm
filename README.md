@@ -15,10 +15,10 @@ This is a self-balancing robot on two wheels. It uses a gyrometer and accelerome
 
 Orchestra recieves and interprets wireless packets from a master microcontroller. These packets contain information on the duration and frequency of a music note. The Orchestra robot will interpret these packets and produce the proper note at the correct frequency and duration to produce music.  
 
-    **Note:**
+**Note:**
 
-    * Orchestra contains test code used to ensure wireless communications and wave-generation were working.  
-    * Orchestra-working is the final working version of the project
+*    Orchestra contains test code used to ensure wireless communications and wave-generation were working.  
+*    Orchestra-working is the final working version of the project
 
 ## Flashing programs onto the M2
 
